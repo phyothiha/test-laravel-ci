@@ -30,6 +30,6 @@ jobs:
                 git config user.name "gh-actions"
                 git config user.email "gh@test.com"
                 git add .
-                git commit -m "Beautify with Laravel Pint"
+                git commit -m "Beautify with Laravel Pint" || exit 0
                 git push
             
