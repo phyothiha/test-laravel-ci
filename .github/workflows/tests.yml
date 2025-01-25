@@ -22,12 +22,17 @@ jobs:
           with:
             php-version: '8.3'
             tools: composer:v2
-            
+        
+        - name: Get composer cache dir
+          id: composer-cache-dir
+          run: echo dir=$(composer config cache-files-dir) >> $GITHUB_OUTPUT
+        
         - name: Cache dependencies
           uses: actions/cache@v4.2.0
           with:
             key: composer-cache-${{ hashFiles('**/composer.lock') }}
-            path: vendor/
+            path: ${{ steps.composer-cache-dir.outputs.dir }}
+            restore-keys: composer-cache-
           
         - name: Install dependencies
           run: composer install -q --no-interaction --no-progress
