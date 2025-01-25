@@ -4,41 +4,41 @@ on:
   pull_request
   
 jobs:
-    run-tests:
-        runs-on: ubuntu-latest
-        
-        services:
-          redis:
-            image: redis:7.4
-            ports: 
-              - 6379:6379
-        
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4.2.2
+    tests:
+      runs-on: ubuntu-latest
+      
+      # services:
+      #   redis:
+      #     image: redis:7.4
+      #     ports: 
+      #       - 6379:6379
+      
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4.2.2
 
-            - name: Setup PHP and Composer
-              uses: shivammathur/setup-php@2.32.0
-              with:
-                php-version: '8.3'
-                tools: composer:v2
-                
-            - name: Cache dependencies
-              uses: actions/cache@v4.2.0
-              with:
-                key: composer-cache-${{ hashFiles('**/composer.lock') }}
-                path: vendor/
-              
-            - name: Install dependencies
-              run: composer install -q --no-interaction
+        - name: Setup PHP and Composer
+          uses: shivammathur/setup-php@2.32.0
+          with:
+            php-version: '8.3'
+            tools: composer:v2
             
-            - name: Prep app
-              run: |
-                cp .env.example .env
-                php artisan key:generate
-              
-            - name: Run Tests
-              env:
-                DB_CONNECTION: sqlite
-                DB_DATABASE: ":memory:"
-              run: php artisan test --compact
+        - name: Cache dependencies
+          uses: actions/cache@v4.2.0
+          with:
+            key: composer-cache-${{ hashFiles('**/composer.lock') }}
+            path: vendor/
+          
+        - name: Install dependencies
+          run: composer install -q --no-interaction --no-progress
+        
+        - name: Prep app
+          run: |
+            cp .env.example .env
+            php artisan key:generate
+          
+        - name: Run Tests
+          env:
+            DB_CONNECTION: sqlite
+            DB_DATABASE: ":memory:"
+          run: php artisan test --compact
