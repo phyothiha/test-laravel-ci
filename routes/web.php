@@ -15,7 +15,7 @@ use Redis;
 */
 
 Route::get('/', function () {
-    Redis::incr('user_views', 1);
+    // Redis::incr('user_views', 1);
     
     return view('welcome');
 });
